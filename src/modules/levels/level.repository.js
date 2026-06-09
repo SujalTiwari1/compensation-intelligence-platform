@@ -1,8 +1,8 @@
 import prisma from "../../config/db.js";
 
-export const roleRepository = {
+export const levelRepository = {
   findAll: async () => {
-    return prisma.role.findMany({
+    return prisma.level.findMany({
       orderBy: {
         name: "asc",
       },
@@ -10,7 +10,7 @@ export const roleRepository = {
   },
 
   findById: async (id) => {
-    return prisma.role.findUnique({
+    return prisma.level.findUnique({
       where: {
         id,
       },
@@ -18,7 +18,7 @@ export const roleRepository = {
   },
 
   findByName: async (name) => {
-    return prisma.role.findUnique({
+    return prisma.level.findUnique({
       where: {
         name,
       },
@@ -26,13 +26,13 @@ export const roleRepository = {
   },
 
   create: async (data) => {
-    return prisma.role.create({
+    return prisma.level.create({
       data,
     });
   },
 
   delete: async (id) => {
-    return prisma.role.delete({
+    return prisma.level.delete({
       where: {
         id,
       },
