@@ -2,8 +2,8 @@ import { locationRepository } from "./location.repository.js";
 import { ApiError } from "../../utils/api-error.js";
 
 export const locationService = {
-  getAllLocations: async () => {
-    return locationRepository.findAll();
+  getAllLocations: async (pagination) => {
+    return locationRepository.findAll(pagination);
   },
 
   getLocationById: async (id) => {

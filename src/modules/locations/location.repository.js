@@ -1,8 +1,10 @@
 import prisma from "../../config/db.js";
 
 export const locationRepository = {
-  findAll: async () => {
+  findAll: async (pagination) => {
     return prisma.location.findMany({
+      ...pagination,
+
       orderBy: {
         city: "asc",
       },
@@ -17,10 +19,7 @@ export const locationRepository = {
     });
   },
 
-  findByCityAndCountry: async (
-    city,
-    country
-  ) => {
+  findByCityAndCountry: async (city, country) => {
     return prisma.location.findUnique({
       where: {
         city_country: {
