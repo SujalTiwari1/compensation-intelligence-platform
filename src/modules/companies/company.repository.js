@@ -1,8 +1,10 @@
 import prisma from "../../config/db.js";
 
 export const companyRepository = {
-  findAll: async () => {
+  findAll: async (pagination) => {
     return prisma.company.findMany({
+      ...pagination,
+
       orderBy: {
         name: "asc",
       },

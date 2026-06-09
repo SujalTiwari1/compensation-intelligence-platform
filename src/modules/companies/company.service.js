@@ -2,8 +2,8 @@ import { companyRepository } from "./company.repository.js";
 import { ApiError } from "../../utils/api-error.js";
 
 export const companyService = {
-  getAllCompanies: async () => {
-    return companyRepository.findAll();
+  getAllCompanies: async (pagination) => {
+    return companyRepository.findAll(pagination);
   },
 
   getCompanyById: async (id) => {

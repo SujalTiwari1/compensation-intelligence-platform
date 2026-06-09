@@ -3,11 +3,21 @@ export const getPagination = (
   limit = 10
 ) => {
 
-  const skip =
-    (page - 1) * limit;
+  page = Math.max(
+    1,
+    Number(page)
+  );
+
+  limit = Math.min(
+    100,
+    Math.max(
+      1,
+      Number(limit)
+    )
+  );
 
   return {
-    skip,
-    take: Number(limit),
+    skip: (page - 1) * limit,
+    take: limit,
   };
 };
