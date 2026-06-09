@@ -1,13 +1,15 @@
 import prisma from "../../config/db.js";
 
 export const levelRepository = {
-  findAll: async () => {
-    return prisma.level.findMany({
-      orderBy: {
-        name: "asc",
-      },
-    });
-  },
+  findAll: async (pagination) => {
+  return prisma.level.findMany({
+    ...pagination,
+
+    orderBy: {
+      name: "asc",
+    },
+  });
+},
 
   findById: async (id) => {
     return prisma.level.findUnique({

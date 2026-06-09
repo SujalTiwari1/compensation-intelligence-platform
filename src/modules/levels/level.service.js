@@ -2,8 +2,8 @@ import { levelRepository } from "./level.repository.js";
 import { ApiError } from "../../utils/api-error.js";
 
 export const levelService = {
-  getAllLevels: async () => {
-    return levelRepository.findAll();
+  getAllLevels: async (pagination) => {
+    return levelRepository.findAll(pagination);
   },
 
   getLevelById: async (id) => {

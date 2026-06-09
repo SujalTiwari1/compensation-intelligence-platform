@@ -4,8 +4,14 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 
 import { successResponse } from "../../utils/api-response.js";
 
+import { getPagination } from "../../utils/pagination.js";
+
 export const getLevels = asyncHandler(async (req, res) => {
-  const levels = await levelService.getAllLevels();
+  const { page, limit } = req.query;
+
+  const pagination = getPagination(page, limit);
+
+  const levels = await levelService.getAllLevels(pagination);
 
   return successResponse(res, levels, "Levels fetched successfully");
 });
