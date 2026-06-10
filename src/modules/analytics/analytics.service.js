@@ -4,6 +4,8 @@ import { analyticsRepository } from "./analytics.repository.js";
 
 import { calculateMedian } from "../../utils/median.js";
 
+import { getBenchmarkStatus } from "../../utils/benchmark-status.js";
+
 export const analyticsService = {
   getCompanyAnalytics: async (companyId) => {
     const company = await analyticsRepository.findCompanyById(
@@ -52,6 +54,59 @@ export const analyticsService = {
       statusBreakdown,
 
       levelBreakdown,
+    };
+  },
+
+
+  //benchmark service
+  getBenchmark: async ({
+    roleId,
+    levelId,
+    locationId,
+    currentCompensation,
+  }) => {
+    const records = await analyticsRepository.getBenchmarkData({
+      roleId,
+      levelId,
+      locationId,
+    });
+
+    if (!records.length) {
+      throw new ApiError(404, "Insufficient benchmark data");
+    }
+
+    const salaries = records.map((record) => Number(record.totalCompensation));
+
+    const average = Math.round(
+      salaries.reduce((acc, curr) => acc + curr, 0) / salaries.length,
+    );
+
+    const median = calculateMedian(salaries);
+
+    const difference = currentCompensation - median;
+
+    const percentageDifference = Number(
+      ((difference / median) * 100).toFixed(2),
+    );
+
+    const status = getBenchmarkStatus(percentageDifference);
+
+    return {
+      market: {
+        average,
+        median,
+        sampleSize: salaries.length,
+      },
+
+      comparison: {
+        currentCompensation,
+
+        difference,
+
+        percentageDifference,
+
+        status,
+      },
     };
   },
 };

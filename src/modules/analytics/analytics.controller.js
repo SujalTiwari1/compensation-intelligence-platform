@@ -15,3 +15,20 @@ export const getCompanyAnalytics = asyncHandler(async (req, res) => {
     "Company analytics fetched successfully",
   );
 });
+
+//benchamrk controller
+
+export const getBenchmark =
+  asyncHandler(async (req, res) => {
+
+    const result =
+      await analyticsService.getBenchmark(
+        req.validatedQuery
+      );
+
+    return successResponse(
+      res,
+      result,
+      "Benchmark analysis completed"
+    );
+  });

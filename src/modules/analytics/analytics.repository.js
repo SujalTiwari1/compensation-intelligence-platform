@@ -74,4 +74,26 @@ export const analyticsRepository = {
       },
     });
   },
+  
+  //benchmark Repository
+
+  getBenchmarkData: async ({ roleId, levelId, locationId }) => {
+    return prisma.compensationSubmission.findMany({
+      where: {
+        roleId,
+        levelId,
+        locationId,
+
+        status: "APPROVED",
+      },
+
+      select: {
+        totalCompensation: true,
+      },
+
+      orderBy: {
+        totalCompensation: "asc",
+      },
+    });
+  },
 };

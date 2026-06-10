@@ -6,10 +6,20 @@ export const validate = (
 ) => {
   return (req, res, next) => {
     try {
-      req[source] =
+
+      const parsedData =
         schema.parse(req[source]);
 
+      if (source === "query") {
+        req.validatedQuery =
+          parsedData;
+      } else {
+        req[source] =
+          parsedData;
+      }
+
       next();
+
     } catch (error) {
 
       if (error instanceof ZodError) {
