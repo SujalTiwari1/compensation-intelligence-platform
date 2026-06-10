@@ -15,3 +15,18 @@ export const benchmarkSchema = z.object({
 
   currentCompensation: z.coerce.number().positive(),
 });
+
+//company-comparison validation
+
+export const companyComparisonSchema =
+  z.object({
+    companyA: z.coerce
+      .number()
+      .int()
+      .positive(),
+
+    companyB: z.coerce
+      .number()
+      .int()
+      .positive(),
+  });

@@ -32,3 +32,23 @@ export const getBenchmark =
       "Benchmark analysis completed"
     );
   });
+
+  //company-comparison controller
+   
+  export const compareCompanies =
+  asyncHandler(
+    async (req, res) => {
+
+      const result =
+        await analyticsService
+          .compareCompanies(
+            req.validatedQuery
+          );
+
+      return successResponse(
+        res,
+        result,
+        "Company comparison completed"
+      );
+    }
+  );

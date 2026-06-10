@@ -57,7 +57,6 @@ export const analyticsService = {
     };
   },
 
-
   //benchmark service
   getBenchmark: async ({
     roleId,
@@ -107,6 +106,83 @@ export const analyticsService = {
 
         status,
       },
+    };
+  },
+
+  // company-comparison service
+
+  compareCompanies: async ({ companyA, companyB }) => {
+    const [companyAData, companyBData] = await Promise.all([
+      analyticsRepository.getCompanyComparisonData(Number(companyA)),
+
+      analyticsRepository.getCompanyComparisonData(Number(companyB)),
+    ]);
+
+    if (!companyAData.company) {
+      throw new ApiError(404, "Company A not found");
+    }
+
+    if (!companyBData.company) {
+      throw new ApiError(404, "Company B not found");
+    }
+
+    const medianA = calculateMedian(
+      companyAData.salaries.map((item) => Number(item.totalCompensation)),
+    );
+
+    const medianB = calculateMedian(
+      companyBData.salaries.map((item) => Number(item.totalCompensation)),
+    );
+
+    const avgA = Math.round(
+      Number(companyAData.aggregates._avg.totalCompensation || 0),
+    );
+
+    const avgB = Math.round(
+      Number(companyBData.aggregates._avg.totalCompensation || 0),
+    );
+
+    return {
+      companyA: {
+        id: companyAData.company.id,
+        name: companyAData.company.name,
+
+        submissionCount: companyAData.aggregates._count.id,
+
+        averageCompensation: avgA,
+
+        medianCompensation: medianA,
+
+        minCompensation: Number(
+          companyAData.aggregates._min.totalCompensation || 0,
+        ),
+
+        maxCompensation: Number(
+          companyAData.aggregates._max.totalCompensation || 0,
+        ),
+      },
+
+      companyB: {
+        id: companyBData.company.id,
+        name: companyBData.company.name,
+
+        submissionCount: companyBData.aggregates._count.id,
+
+        averageCompensation: avgB,
+
+        medianCompensation: medianB,
+
+        minCompensation: Number(
+          companyBData.aggregates._min.totalCompensation || 0,
+        ),
+
+        maxCompensation: Number(
+          companyBData.aggregates._max.totalCompensation || 0,
+        ),
+      },
+
+      winner:
+        avgA > avgB ? companyAData.company.name : companyBData.company.name,
     };
   },
 };

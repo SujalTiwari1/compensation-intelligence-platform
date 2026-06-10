@@ -74,7 +74,7 @@ export const analyticsRepository = {
       },
     });
   },
-  
+
   //benchmark Repository
 
   getBenchmarkData: async ({ roleId, levelId, locationId }) => {
@@ -95,5 +95,58 @@ export const analyticsRepository = {
         totalCompensation: "asc",
       },
     });
+  },
+  // company comparsion repo
+
+  getCompanyComparisonData: async (companyId) => {
+    const company = await prisma.company.findUnique({
+      where: {
+        id: companyId,
+      },
+    });
+
+    const aggregates = await prisma.compensationSubmission.aggregate({
+      where: {
+        companyId,
+        status: "APPROVED",
+      },
+
+      _count: {
+        id: true,
+      },
+
+      _avg: {
+        totalCompensation: true,
+      },
+
+      _min: {
+        totalCompensation: true,
+      },
+
+      _max: {
+        totalCompensation: true,
+      },
+    });
+
+    const salaries = await prisma.compensationSubmission.findMany({
+      where: {
+        companyId,
+        status: "APPROVED",
+      },
+
+      select: {
+        totalCompensation: true,
+      },
+
+      orderBy: {
+        totalCompensation: "asc",
+      },
+    });
+
+    return {
+      company,
+      aggregates,
+      salaries,
+    };
   },
 };
