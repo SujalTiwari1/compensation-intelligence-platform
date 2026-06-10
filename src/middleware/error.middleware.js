@@ -2,7 +2,7 @@ export const errorMiddleware = (
   err,
   req,
   res,
-  next
+  _next
 ) => {
 
   console.error(err);

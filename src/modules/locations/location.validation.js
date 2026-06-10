@@ -10,7 +10,7 @@ export const createLocationSchema = z.object({
     .min(2, "City must be at least 2 characters")
     .max(100, "City cannot exceed 100 characters")
     .regex(
-      /^[a-zA-Z\s\-]+$/,
+      /^[a-zA-Z -]+$/,
       "City can only contain letters, spaces and hyphens"
     ),
 
@@ -23,7 +23,7 @@ export const createLocationSchema = z.object({
     .min(2, "Country must be at least 2 characters")
     .max(100, "Country cannot exceed 100 characters")
     .regex(
-      /^[a-zA-Z\s\-]+$/,
+      /^[a-zA-Z -]+$/,
       "Country can only contain letters, spaces and hyphens"
     ),
 });

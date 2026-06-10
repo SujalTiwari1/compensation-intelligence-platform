@@ -10,7 +10,7 @@ export const createLevelSchema = z.object({
     .min(2, "Level name must be at least 2 characters")
     .max(50, "Level name cannot exceed 50 characters")
     .regex(
-      /^[a-zA-Z0-9\s\-]+$/,
+      /^[a-zA-Z -]+$/,
       "Level name can only contain letters, numbers, spaces and hyphens"
     ),
 });

@@ -3,7 +3,9 @@
 export default {
   testEnvironment: "node",
 
-  testMatch: [
-    "**/test/**/*.test.js",
-  ],
+  testMatch: ["**/test/**/*.test.js"],
+  
+  collectCoverage: true,
+
+  coverageDirectory: "coverage",
 };

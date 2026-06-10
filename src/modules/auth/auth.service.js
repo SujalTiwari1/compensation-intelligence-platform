@@ -6,6 +6,8 @@ import { authRepository } from "./auth.repository.js";
 
 import { generateAccessToken } from "../../utils/jwt.js";
 
+import prisma from "../../config/db.js";
+
 export const authService = {
   register: async (payload) => {
     const existingUser = await authRepository.findUserByEmail(payload.email);
