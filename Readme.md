@@ -1,139 +1,197 @@
 # Compensation Intelligence Platform
 
-A backend-driven compensation analytics platform that enables professionals to benchmark their salaries against market trends, compare compensation across companies, and gain actionable insights through data-driven analytics.
+[![CI Pipeline](https://github.com/SujalTiwari1/compensation-intelligence-platform/actions/workflows/ci.yaml/badge.svg)](https://github.com/SujalTiwari1/compensation-intelligence-platform/actions/workflows/ci.yaml)
+
+A production-ready backend platform that enables users to submit compensation data, benchmark salaries against market trends, compare compensation across companies, and gain data-driven insights through analytics.
 
 ---
 
-## Overview
+# Live Deployment
 
-Compensation Intelligence Platform is designed to collect, validate, and analyze compensation data from professionals across different companies, roles, levels, and locations.
+### Backend API
+
+https://compensation-intelligence-platform.onrender.com
+
+### Swagger Documentation
+
+https://compensation-intelligence-platform.onrender.com/api-docs
+
+---
+
+# Project Overview
+
+Compensation Intelligence Platform is designed to collect, validate, and analyze compensation data from professionals across multiple companies, job roles, experience levels, and locations.
 
 The platform provides:
 
-* Secure user authentication and authorization
-* Compensation submission and validation
-* Confidence scoring for data quality assessment
-* Market benchmarking analytics
-* Company compensation comparison
-* Administrative dashboard analytics
-* RESTful APIs with Swagger documentation
+* Secure Authentication
+* Compensation Submission
+* Confidence Score Evaluation
+* Benchmark Analytics
+* Company Comparison
+* Dashboard Analytics
+* API Documentation
+* Dockerized Deployment
+* Automated Testing & CI
 
 ---
 
-## Key Features
+# Features
 
-### Authentication & Authorization
+## Authentication & Security
 
-* JWT-based authentication
-* Role-based access control (RBAC)
-* Secure password hashing with bcrypt
-* Rate limiting protection
-
-### Compensation Management
-
-* Submit compensation information
-* Automatic total compensation calculation
-* Confidence score generation
-* Duplicate submission detection
-* Submission status tracking
-
-### Analytics Engine
-
-#### Company Analytics
-
-* Average compensation
-* Median compensation
-* Minimum and maximum compensation
-* Submission distribution
-* Level-wise breakdown
-
-#### Compensation Benchmarking
-
-* Market median comparison
-* Underpaid detection
-* Overpaid detection
-* Percentage difference calculation
-
-#### Company Comparison
-
-* Side-by-side company comparison
-* Compensation metrics comparison
-* Compensation leader identification
-
-#### Dashboard Analytics
-
-* Platform overview metrics
-* Submission statistics
-* Compensation insights
-* Recent submissions with pagination
+* JWT Authentication
+* Password Hashing using bcryptjs
+* Role-Based Access Control (RBAC)
+* Rate Limiting
+* Request Validation using Zod
 
 ---
 
-## Tech Stack
+## Compensation Management
 
-### Backend
-
-* Node.js
-* Express.js
-
-### Database
-
-* PostgreSQL (Neon)
-* Prisma ORM
-
-### Authentication
-
-* JWT
-* bcryptjs
-
-### Validation
-
-* Zod
-
-### API Documentation
-
-* Swagger UI
-* Swagger JSDoc
-
-### Containerization
-
-* Docker
-
-### Testing
-
-* Postman
+* Create Compensation Submission
+* User Submission Tracking
+* Confidence Score Generation
+* Status Classification
+* Duplicate Submission Detection
+* Automatic Total Compensation Calculation
 
 ---
 
-## System Architecture
+## Analytics Engine
+
+### Company Analytics
+
+Provides:
+
+* Average Compensation
+* Median Compensation
+* Minimum Compensation
+* Maximum Compensation
+* Submission Count
+* Status Breakdown
+* Level Breakdown
+
+---
+
+### Market Benchmarking
+
+Allows users to compare compensation against market data.
+
+Provides:
+
+* Market Average
+* Market Median
+* Percentage Difference
+* Underpaid Detection
+* Fairly Paid Detection
+* Overpaid Detection
+
+---
+
+### Company Comparison
+
+Compare two companies based on:
+
+* Average Compensation
+* Median Compensation
+* Submission Count
+* Compensation Range
+
+---
+
+### Dashboard Analytics
+
+Provides:
+
+* Platform Overview Metrics
+* User Statistics
+* Submission Statistics
+* Compensation Statistics
+* Recent Submissions
+* Pagination Support
+
+---
+
+# System Architecture
 
 ```text
 Client
-   |
-   v
-Express API
-   |
+   │
+   ▼
+Express REST API
+   │
+   ▼
+Routes
+   │
+   ▼
 Controllers
-   |
+   │
+   ▼
 Services
-   |
+   │
+   ▼
 Repositories
-   |
+   │
+   ▼
 Prisma ORM
-   |
+   │
+   ▼
 PostgreSQL (Neon)
 ```
 
 ---
 
-## Project Structure
+# Tech Stack
+
+## Backend
+
+* Node.js
+* Express.js
+
+## Database
+
+* PostgreSQL (Neon)
+* Prisma ORM
+
+## Authentication
+
+* JWT
+* bcryptjs
+
+## Validation
+
+* Zod
+
+## Documentation
+
+* Swagger UI
+* Swagger JSDoc
+
+## Testing
+
+* Jest
+
+## DevOps
+
+* Docker
+* GitHub Actions
+
+---
+
+# Project Structure
 
 ```text
 src
+│
 ├── config
 ├── constants
 ├── docs
 ├── middleware
+├── routes
+├── utils
+│
 ├── modules
 │   ├── auth
 │   ├── analytics
@@ -142,86 +200,90 @@ src
 │   ├── level
 │   ├── location
 │   └── compensation
-├── routes
-├── utils
-└── app.js
+│
+├── app.js
+└── server.js
 
 prisma
+│
 ├── migrations
 ├── seed.js
 ├── compensation-seed.js
-├── data
-└── helpers
+└── schema.prisma
+
+test
+│
+├── service
+└── utils
+
+.github
+│
+└── workflows
+    └── ci.yml
 ```
 
 ---
 
-## Core Modules
+# API Endpoints
 
-### Auth Module
-
-* User Registration
-* User Login
-* JWT Authentication
-* Role Authorization
-
-### Master Data Module
-
-* Companies
-* Roles
-* Levels
-* Locations
-
-### Compensation Module
-
-* Create Submission
-* View Submission
-* View User Submissions
-* Confidence Score Evaluation
-
-### Analytics Module
-
-* Company Analytics
-* Benchmark Analytics
-* Company Comparison
-* Dashboard Analytics
-
----
-
-## API Documentation
-
-Swagger Documentation:
-
-```text
-http://localhost:5000/api-docs
-```
-
-Production:
-
-```text
-<DEPLOYMENT_URL>/api-docs
-```
-
----
-
-## Main Endpoints
-
-### Authentication
+## Authentication
 
 ```http
 POST /api/v1/auth/register
 POST /api/v1/auth/login
 ```
 
-### Compensation
+---
+
+## Companies
+
+```http
+GET /api/v1/companies
+POST /api/v1/companies
+```
+
+---
+
+## Roles
+
+```http
+GET /api/v1/roles
+POST /api/v1/roles
+```
+
+---
+
+## Levels
+
+```http
+GET /api/v1/levels
+POST /api/v1/levels
+```
+
+---
+
+## Locations
+
+```http
+GET /api/v1/locations
+POST /api/v1/locations
+```
+
+---
+
+## Compensation
 
 ```http
 POST /api/v1/compensations
+
 GET /api/v1/compensations/:id
+
 GET /api/v1/compensations/my-submissions
 ```
 
-### Analytics
+---
+
+## Analytics
 
 ```http
 GET /api/v1/analytics/company/:companyId
@@ -235,64 +297,142 @@ GET /api/v1/analytics/dashboard
 
 ---
 
-## Running Locally
+# Database Design
 
-### Clone Repository
+The system is built on a normalized relational schema.
 
-```bash
-git clone <repository-url>
-cd compensation-intelligence-platform
+Core Entities:
+
+```text
+Users
+
+Companies
+
+Roles
+
+Levels
+
+Locations
+
+CompensationSubmissions
+
+SubmissionAudits
 ```
 
-### Install Dependencies
+Key Design Goals:
 
-```bash
-npm install
+* Data Integrity
+* Analytics Efficiency
+* Scalability
+* Maintainability
+
+---
+
+# Confidence Scoring Engine
+
+Each compensation submission receives a confidence score.
+
+Scoring Factors:
+
+| Factor          | Score |
+| --------------- | ----- |
+| Company Exists  | +20   |
+| Role Exists     | +15   |
+| Level Exists    | +15   |
+| Location Exists | +15   |
+| Salary In Range | +20   |
+| Not Duplicate   | +15   |
+
+Maximum Score:
+
+```text
+100
 ```
 
-### Configure Environment
+Status Mapping:
 
-Create `.env`
+```text
+80 - 100 → APPROVED
 
-```env
-PORT=5000
+50 - 79 → PENDING_REVIEW
 
-DATABASE_URL=<your_neon_database_url>
-
-JWT_SECRET=<your_jwt_secret>
-```
-
-### Run Migrations
-
-```bash
-npx prisma migrate dev
-```
-
-### Seed Database
-
-```bash
-npm run seed
-
-npm run seed:compensation
-```
-
-### Start Application
-
-```bash
-npm run dev
+0 - 49 → FLAGGED
 ```
 
 ---
 
-## Docker
+# Testing
 
-Build Image
+The project includes automated unit testing using Jest.
+
+Current Coverage:
+
+* Analytics Service
+* Benchmark Utility
+* Confidence Score Utility
+* Median Calculation Utility
+
+Run Tests:
+
+```bash
+npm test
+```
+
+---
+
+# Code Quality
+
+Run ESLint:
+
+```bash
+npm run lint
+```
+
+The project follows:
+
+* Modular Architecture
+* Layered Design
+* Consistent Error Handling
+* Input Validation
+* Clean Code Principles
+
+---
+
+# CI/CD Pipeline
+
+GitHub Actions automatically performs:
+
+* Dependency Installation
+* Prisma Client Generation
+* ESLint Validation
+* Jest Test Execution
+* Docker Build Verification
+
+Generated Artifacts:
+
+* ESLint Report
+* Test Report
+* Coverage Report
+
+Workflow File:
+
+```text
+.github/workflows/ci.yml
+```
+
+---
+
+# Docker
+
+## Build Image
 
 ```bash
 docker build -t compensation-platform .
 ```
 
-Run Container
+---
+
+## Run Container
 
 ```bash
 docker run -d \
@@ -303,39 +443,140 @@ compensation-platform
 
 ---
 
-## Postman Collection
+# Local Setup
 
-The project includes:
+## Clone Repository
 
-```text
-postman/
-├── Compensation-Intelligence-Platform.postman_collection.json
-├── Compensation-Intelligence-Platform.postman_environment.json
+```bash
+git clone <repository-url>
+
+cd compensation-intelligence-platform
 ```
 
-Import both files into Postman for testing.
+---
+
+## Install Dependencies
+
+```bash
+npm install
+```
 
 ---
 
-## Future Enhancements
+## Configure Environment
+
+Create a `.env` file:
+
+```env
+PORT=5000
+
+DATABASE_URL=<your-neon-url>
+
+JWT_SECRET=<your-secret>
+```
+
+---
+
+## Generate Prisma Client
+
+```bash
+npx prisma generate
+```
+
+---
+
+## Run Migrations
+
+```bash
+npx prisma migrate dev
+```
+
+---
+
+## Seed Master Data
+
+```bash
+npm run seed
+```
+
+---
+
+## Seed Compensation Data
+
+```bash
+npm run seed:compensation
+```
+
+---
+
+## Start Application
+
+Development:
+
+```bash
+npm run dev
+```
+
+Production:
+
+```bash
+npm start
+```
+
+---
+
+# Documentation
+
+Detailed project documentation is available in:
+
+```text
+docs
+├── Architecture.md
+├── API-Specification.md
+└── Database-Design.md
+```
+
+---
+
+# Project Highlights
+
+* Layered Architecture
+* Modular Monolith Design
+* Prisma ORM
+* PostgreSQL (Neon)
+* JWT Authentication
+* Zod Validation
+* Swagger Documentation
+* Jest Testing
+* ESLint Integration
+* GitHub Actions CI Pipeline
+* Docker Containerization
+* Benchmark Analytics Engine
+* Company Comparison Engine
+* Dashboard Analytics
+* Confidence Scoring System
+
+---
+
+# Future Enhancements
+
+Potential future improvements:
 
 * Frontend Dashboard
+* AI-Based Salary Prediction
 * Compensation Trend Analysis
+* Analytics Caching
+* Offer Verification System
 * Advanced Benchmark Models
-* Data Visualization
-* Export Reports
-* AI-Assisted Compensation Insights
 
 ---
 
-## Author
+# Author
 
 **Sujal Tiwari**
 
-Backend Developer | AI/ML Enthusiast | Full Stack Learner
-
 ---
 
-## License
+# License
 
-This project was developed as part of an internship selection assignment and is intended for educational and evaluation purposes.
+This project was developed as part of an internship assessment and is intended for educational and evaluation purposes.
