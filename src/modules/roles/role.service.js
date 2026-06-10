@@ -2,8 +2,8 @@ import { roleRepository } from "./role.repository.js";
 import { ApiError } from "../../utils/api-error.js";
 
 export const roleService = {
-  getAllRoles: async () => {
-    return roleRepository.findAll();
+  getAllRoles: async (pagination) => {
+    return roleRepository.findAll(pagination);
   },
 
   getRoleById: async (id) => {

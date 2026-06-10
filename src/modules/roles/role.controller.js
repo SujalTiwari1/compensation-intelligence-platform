@@ -4,9 +4,12 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 
 import { successResponse } from "../../utils/api-response.js";
 
-export const getRole = asyncHandler(async (req, res) => {
-  const roles = await roleService.getAllRoles();
+import { getPagination } from "../../utils/pagination.js";
 
+export const getRole = asyncHandler(async (req, res) => {
+  const { page, limit } = req.query;
+  const pagiantion = getPagination(page, limit);
+  const roles = await roleService.getAllRoles(pagiantion);
   return successResponse(res, roles, "Roles fetched successfully");
 });
 

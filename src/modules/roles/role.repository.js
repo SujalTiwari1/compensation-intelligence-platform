@@ -1,8 +1,9 @@
 import prisma from "../../config/db.js";
 
 export const roleRepository = {
-  findAll: async () => {
+  findAll: async (pagination) => {
     return prisma.role.findMany({
+      ...pagination,
       orderBy: {
         name: "asc",
       },

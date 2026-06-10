@@ -5,29 +5,15 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 import { successResponse } from "../../utils/api-response.js";
 import { getPagination } from "../../utils/pagination.js";
 
-export const getCompanies = asyncHandler(
-  async (req, res) => {
+export const getCompanies = asyncHandler(async (req, res) => {
+  const { page, limit } = req.query;
 
-    const {
-      page,
-      limit,
-    } = req.query;
+  const pagination = getPagination(page, limit);
 
-    const pagination =
-      getPagination(page, limit);
+  const companies = await companyService.getAllCompanies(pagination);
 
-    const companies =
-      await companyService.getAllCompanies(
-        pagination
-      );
-
-    return successResponse(
-      res,
-      companies,
-      "Companies fetched successfully"
-    );
-  }
-);
+  return successResponse(res, companies, "Companies fetched successfully");
+});
 
 export const getCompanyById = asyncHandler(async (req, res) => {
   const company = await companyService.getCompanyById(req.params.id);
