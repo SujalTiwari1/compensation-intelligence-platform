@@ -9,12 +9,18 @@ import {
 import { validate } from "../../middleware/validate.middleware.js";
 
 import { createCompensationSchema } from "./compensation.validation.js";
+import { authenticate } from "../../middleware/auth.middleware.js";
 
 const router = Router();
 
-router.post("/", validate(createCompensationSchema), createSubmission);
+router.post(
+  "/",
+  authenticate,
+  validate(createCompensationSchema),
+  createSubmission,
+);
 
-router.get("/", getMySubmissions);
+router.get("/", authenticate, getMySubmissions);
 
 router.get("/:id", getSubmissionById);
 
