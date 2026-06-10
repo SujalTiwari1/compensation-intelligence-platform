@@ -34,7 +34,7 @@ export const getBenchmark =
   });
 
   //company-comparison controller
-   
+
   export const compareCompanies =
   asyncHandler(
     async (req, res) => {
@@ -49,6 +49,26 @@ export const getBenchmark =
         res,
         result,
         "Company comparison completed"
+      );
+    }
+  );
+
+  //Dashboard Controller
+
+  export const getDashboardAnalytics =
+  asyncHandler(
+    async (req, res) => {
+
+      const result =
+        await analyticsService
+          .getDashboardAnalytics(
+            req.validatedQuery
+          );
+
+      return successResponse(
+        res,
+        result,
+        "Dashboard analytics fetched successfully"
       );
     }
   );

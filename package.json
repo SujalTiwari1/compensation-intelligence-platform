@@ -8,7 +8,7 @@
     "dev": "nodemon src/server.js",
     "seed": "node prisma/seed.js",
     "seed:compensation": "node prisma/compensation-seed.js",
-     "reset:compensation": "node prisma/reset-compensation.js"
+    "reset:compensation": "node prisma/reset-compensation.js"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +25,8 @@
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.11.0",
     "prisma": "^6.19.3",
+    "swagger-jsdoc": "^6.3.0",
+    "swagger-ui-express": "^5.0.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {

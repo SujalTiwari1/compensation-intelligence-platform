@@ -185,4 +185,101 @@ export const analyticsService = {
         avgA > avgB ? companyAData.company.name : companyBData.company.name,
     };
   },
+
+  //Dashboard Service
+
+  getDashboardAnalytics:
+  async ({
+    page = 1,
+    limit = 10,
+  }) => {
+
+    const skip =
+      (page - 1) * limit;
+
+    const [
+      overview,
+      submissionStats,
+      compensationStats,
+      recentSubmissions,
+    ] = await Promise.all([
+
+      analyticsRepository
+        .getDashboardOverview(),
+
+      analyticsRepository
+        .getDashboardSubmissionStats(),
+
+      analyticsRepository
+        .getDashboardCompensationStats(),
+
+      analyticsRepository
+        .getRecentSubmissions({
+          skip,
+          take: limit,
+        }),
+    ]);
+
+    return {
+
+      overview: {
+
+        totalCompanies:
+          overview.companies,
+
+        totalRoles:
+          overview.roles,
+
+        totalLevels:
+          overview.levels,
+
+        totalLocations:
+          overview.locations,
+
+        totalUsers:
+          overview.users,
+      },
+
+      submissionStats,
+
+      compensationStats: {
+
+        average: Math.round(
+          Number(
+            compensationStats._avg
+              .totalCompensation || 0
+          )
+        ),
+
+        minimum: Number(
+          compensationStats._min
+            .totalCompensation || 0
+        ),
+
+        maximum: Number(
+          compensationStats._max
+            .totalCompensation || 0
+        ),
+      },
+
+      recentSubmissions:
+        recentSubmissions.submissions,
+
+      pagination: {
+
+        page,
+
+        limit,
+
+        total:
+          recentSubmissions.total,
+
+        totalPages:
+          Math.ceil(
+            recentSubmissions.total /
+            limit
+          ),
+      },
+    };
+  },
 };

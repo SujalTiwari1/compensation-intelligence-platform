@@ -149,4 +149,118 @@ export const analyticsRepository = {
       salaries,
     };
   },
+
+  //Dashboard Repo Layer
+  getDashboardOverview: async () => {
+    const [companies, roles, levels, locations, users] = await Promise.all([
+      prisma.company.count(),
+      prisma.role.count(),
+      prisma.level.count(),
+      prisma.location.count(),
+      prisma.user.count(),
+    ]);
+
+    return {
+      companies,
+      roles,
+      levels,
+      locations,
+      users,
+    };
+  },
+  getDashboardSubmissionStats: async () => {
+    const [total, approved, pendingReview, flagged] = await Promise.all([
+      prisma.compensationSubmission.count(),
+
+      prisma.compensationSubmission.count({
+        where: {
+          status: "APPROVED",
+        },
+      }),
+
+      prisma.compensationSubmission.count({
+        where: {
+          status: "PENDING_REVIEW",
+        },
+      }),
+
+      prisma.compensationSubmission.count({
+        where: {
+          status: "FLAGGED",
+        },
+      }),
+    ]);
+
+    return {
+      total,
+      approved,
+      pendingReview,
+      flagged,
+    };
+  },
+
+  getDashboardCompensationStats:
+  async () => {
+
+    return prisma.compensationSubmission.aggregate({
+
+      _avg: {
+        totalCompensation: true,
+      },
+
+      _min: {
+        totalCompensation: true,
+      },
+
+      _max: {
+        totalCompensation: true,
+      },
+    });
+  },
+
+  getRecentSubmissions:
+  async ({
+    skip,
+    take,
+  }) => {
+
+    const [
+      submissions,
+      total,
+    ] = await Promise.all([
+
+      prisma.compensationSubmission.findMany({
+
+        skip,
+        take,
+
+        orderBy: {
+          createdAt: "desc",
+        },
+
+        include: {
+          company: true,
+          role: true,
+          level: true,
+          location: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      }),
+
+      prisma.compensationSubmission.count(),
+    ]);
+
+    return {
+      submissions,
+      total,
+    };
+  },
+
+  
 };
