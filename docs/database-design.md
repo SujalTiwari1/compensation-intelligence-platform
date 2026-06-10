@@ -4,52 +4,41 @@
 
 Version: 1.0
 
-Database: PostgreSQL
+Database: PostgreSQL (Neon)
 
-ORM: Prisma
-
----
-
-# 1. Design Principles
-
-The database is designed around four goals:
-
-1. Data Integrity
-2. Analytics Efficiency
-3. Extensibility
-4. Maintainability
-
-The system uses normalized master entities and stores compensation submissions separately to ensure accurate aggregation and comparison.
+ORM: Prisma ORM
 
 ---
 
-# 2. Entity Relationship Diagram (ERD)
+# 1. Design Overview
 
+The Compensation Intelligence Platform uses a relational database architecture optimized for:
+
+* Data Integrity
+* Compensation Analytics
+* Benchmarking
+* Company Comparison
+* Scalability
+* Maintainability
+
+The system follows a normalized design where master entities (Company, Role, Level, Location) are stored separately and referenced by compensation submissions.
+
+---
+
+# 2. Entity Relationship Diagram
+
+```text
 User
-
-↓
-
-CompensationSubmission
-
-↓
-
-Company
-
-↓
-
-Role
-
-↓
-
-Level
-
-↓
-
-Location
-
-↓
-
-SubmissionAudit
+ │
+ └── CompensationSubmission
+        │
+        ├── Company
+        ├── Role
+        ├── Level
+        └── Location
+                │
+                └── SubmissionAudit
+```
 
 ---
 
@@ -58,8 +47,6 @@ SubmissionAudit
 ## User
 
 Stores authenticated platform users.
-
-### Fields
 
 | Field     | Type     | Constraints  |
 | --------- | -------- | ------------ |
@@ -71,13 +58,10 @@ Stores authenticated platform users.
 | createdAt | DateTime | Default Now  |
 | updatedAt | DateTime | Auto Updated |
 
----
-
 ### Relationships
 
 ```text
 User
-
 1 → N CompensationSubmission
 ```
 
@@ -87,8 +71,6 @@ User
 
 Stores standardized company information.
 
-### Fields
-
 | Field          | Type     | Constraints |
 | -------------- | -------- | ----------- |
 | id             | Int      | Primary Key |
@@ -96,27 +78,10 @@ Stores standardized company information.
 | normalizedName | String   | Unique      |
 | createdAt      | DateTime | Default Now |
 
----
-
-### Example
-
-```text
-Google
-
-Amazon
-
-Microsoft
-
-OpenAI
-```
-
----
-
 ### Relationships
 
 ```text
 Company
-
 1 → N CompensationSubmission
 ```
 
@@ -124,26 +89,20 @@ Company
 
 ## Role
 
-Stores standardized engineering roles.
-
-### Fields
+Stores standardized job roles.
 
 | Field | Type   | Constraints |
 | ----- | ------ | ----------- |
 | id    | Int    | Primary Key |
 | name  | String | Unique      |
 
----
-
-### Example
+### Sample Data
 
 ```text
 Backend Engineer
-
 Frontend Engineer
-
+Full Stack Engineer
 Data Engineer
-
 ML Engineer
 ```
 
@@ -151,29 +110,22 @@ ML Engineer
 
 ## Level
 
-Stores employee levels.
-
-### Fields
+Stores career progression levels.
 
 | Field | Type   | Constraints |
 | ----- | ------ | ----------- |
 | id    | Int    | Primary Key |
 | name  | String | Unique      |
 
----
-
-### Example
+### Sample Data
 
 ```text
-L3
-
-L4
-
-L5
-
+Intern
+Junior
+Mid
 Senior
-
 Staff
+Principal
 ```
 
 ---
@@ -182,107 +134,73 @@ Staff
 
 Stores compensation locations.
 
-### Fields
-
 | Field   | Type   | Constraints |
 | ------- | ------ | ----------- |
 | id      | Int    | Primary Key |
 | city    | String | Required    |
 | country | String | Required    |
 
----
-
-### Example
+### Unique Constraint
 
 ```text
-Bangalore
-
-Hyderabad
-
-Pune
-
-Mumbai
+(city, country)
 ```
 
 ---
 
 ## CompensationSubmission
 
-Core table of the platform.
+Core business entity.
 
-Every compensation report is stored here.
+Every compensation record submitted by users is stored here.
 
-### Fields
-
-| Field             | Type     |
-| ----------------- | -------- |
-| id                | UUID     |
-| userId            | UUID     |
-| companyId         | Int      |
-| roleId            | Int      |
-| levelId           | Int      |
-| locationId        | Int      |
-| baseSalary        | Decimal  |
-| bonus             | Decimal  |
-| stock             | Decimal  |
-| totalCompensation | Decimal  |
-| confidenceScore   | Int      |
-| status            | Enum     |
-| source            | Enum     |
-| createdAt         | DateTime |
-| updatedAt         | DateTime |
+| Field             | Type          |
+| ----------------- | ------------- |
+| id                | UUID          |
+| userId            | UUID          |
+| companyId         | Int           |
+| roleId            | Int           |
+| levelId           | Int           |
+| locationId        | Int           |
+| baseSalary        | Decimal(12,2) |
+| bonus             | Decimal(12,2) |
+| stock             | Decimal(12,2) |
+| totalCompensation | Decimal(12,2) |
+| confidenceScore   | Integer       |
+| verified          | Boolean       |
+| status            | Enum          |
+| source            | Enum          |
+| createdAt         | DateTime      |
+| updatedAt         | DateTime      |
 
 ---
 
 ### Total Compensation Formula
 
 ```text
-Total Compensation
-
-=
-
-Base Salary
-
-+
-
-Bonus
-
-+
-
-Stock
+Total Compensation =
+Base Salary + Bonus + Stock
 ```
 
 ---
 
-### Status Enum
+### Submission Status
 
 ```text
 APPROVED
-
 PENDING_REVIEW
-
 FLAGGED
-
 REJECTED
 ```
 
 ---
 
-### Source Enum
+### Submission Source
 
 ```text
 SYSTEM
-
 USER
 ```
-
-SYSTEM
-
-Seeded data
-
-USER
-
-User submitted data
 
 ---
 
@@ -290,23 +208,18 @@ User submitted data
 
 ```text
 User
-
 1 → N CompensationSubmission
 
 Company
-
 1 → N CompensationSubmission
 
 Role
-
 1 → N CompensationSubmission
 
 Level
-
 1 → N CompensationSubmission
 
 Location
-
 1 → N CompensationSubmission
 ```
 
@@ -314,39 +227,21 @@ Location
 
 ## SubmissionAudit
 
-Tracks moderation history.
-
-### Fields
+Tracks moderation and status changes.
 
 | Field          | Type     |
 | -------------- | -------- |
 | id             | UUID     |
 | submissionId   | UUID     |
+| actionBy       | String   |
 | previousStatus | Enum     |
 | newStatus      | Enum     |
-| actionBy       | UUID     |
 | reason         | String   |
 | createdAt      | DateTime |
 
 ---
 
-### Example
-
-```text
-Submission #101
-
-PENDING_REVIEW
-
-↓
-
-APPROVED
-
-By Admin
-```
-
----
-
-# 4. Database Constraints
+# 4. Constraints
 
 ## Unique Constraints
 
@@ -360,7 +255,6 @@ Company
 
 ```text
 name
-
 normalizedName
 ```
 
@@ -376,47 +270,42 @@ Level
 name
 ```
 
+Location
+
+```text
+city + country
+```
+
 ---
 
-## Foreign Key Constraints
+## Foreign Keys
+
+CompensationSubmission requires:
+
+```text
+userId
+companyId
+roleId
+levelId
+locationId
+```
+
+to exist.
+
+---
+
+# 5. Indexing Strategy
+
+### Single Column Indexes
 
 CompensationSubmission
 
 ```text
-userId
-
 companyId
-
 roleId
-
 levelId
-
 locationId
-```
-
-must exist.
-
----
-
-# 5. Index Strategy
-
-To optimize filtering and analytics.
-
-### CompensationSubmission
-
-Create indexes on:
-
-```text
-companyId
-
-roleId
-
-levelId
-
-locationId
-
 status
-
 createdAt
 ```
 
@@ -426,312 +315,229 @@ createdAt
 
 ```text
 companyId
-
 levelId
-
 locationId
 ```
 
 Used frequently in:
 
 ```text
-Comparison
-
-Benchmarking
-
-Analytics
+Company Analytics
+Benchmark Analytics
+Company Comparison
 ```
 
 ---
 
-# 6. Confidence Scoring Storage
+# 6. Confidence Scoring
 
-Stored in:
-
-```text
-confidenceScore
-```
-
-Range:
+Every compensation submission receives a confidence score between:
 
 ```text
 0 - 100
 ```
 
----
+### Factors
 
-### Scoring Factors
+| Factor                   | Score |
+| ------------------------ | ----- |
+| Company Exists           | +20   |
+| Role Exists              | +15   |
+| Level Exists             | +15   |
+| Location Exists          | +15   |
+| Salary In Expected Range | +20   |
+| Not Duplicate            | +15   |
 
-Known Company
+Maximum:
 
-+20
-
-Known Role
-
-+15
-
-Known Level
-
-+15
-
-Valid Salary Range
-
-+25
-
-No Duplicate
-
-+15
-
-Complete Submission
-
-+10
+```text
+100
+```
 
 ---
 
 ### Status Mapping
 
 ```text
-80 - 100
+80 - 100 → APPROVED
 
-APPROVED
+50 - 79 → PENDING_REVIEW
 
-50 - 79
-
-PENDING_REVIEW
-
-0 - 49
-
-FLAGGED
+0 - 49 → FLAGGED
 ```
 
 ---
 
-# 7. Duplicate Detection Strategy
+# 7. Seed Data Strategy
 
-Duplicate Check Inputs
+The platform ships with master data and generated compensation records.
 
-```text
-companyId
-
-roleId
-
-levelId
-
-locationId
-
-totalCompensation
-```
-
-Duplicate Window
-
-```text
-30 Days
-```
-
-Similarity Threshold
-
-```text
-95%
-```
-
-Flag suspicious entries.
-
----
-
-# 8. Seed Data Strategy
-
-Purpose
-
-Provide sufficient data for analytics.
-
----
-
-### Seed Companies
+### Companies
 
 ```text
 Google
-
 Amazon
-
 Microsoft
-
 Meta
-
 Netflix
-
 Apple
-
 Uber
-
 Atlassian
-
 Adobe
-
 OpenAI
 ```
 
----
-
-### Seed Roles
+### Roles
 
 ```text
 Backend Engineer
-
 Frontend Engineer
-
 Full Stack Engineer
-
 Data Engineer
-
 ML Engineer
 ```
 
----
-
-### Seed Levels
+### Levels
 
 ```text
-L3
-
-L4
-
-L5
-
+Intern
+Junior
+Mid
 Senior
-
 Staff
+Principal
 ```
 
----
-
-### Seed Locations
+### Locations
 
 ```text
 Bangalore
-
 Hyderabad
-
-Pune
-
 Mumbai
-
+Pune
 Delhi
 ```
 
----
-
-### Seed Compensation Records
-
-Target
+### Compensation Records
 
 ```text
-200 - 300 Records
+500+ Seeded Records
 ```
 
-Purpose
+Purpose:
 
-Enable:
-
-* Analytics
-* Benchmarking
-* Comparisons
-
-immediately after deployment.
-
----
-
-# 9. Analytics Query Strategy
-
-No analytics tables are stored.
-
-Analytics are generated dynamically.
+```text
+Analytics
+Benchmarking
+Company Comparison
+Dashboard Metrics
+```
 
 ---
+
+# 8. Analytics Query Strategy
+
+Analytics are generated dynamically using Prisma Aggregations.
+
+No dedicated analytics tables are maintained.
 
 ### Company Analytics
 
-Calculate
+Uses:
 
-```sql
-AVG(baseSalary)
+```text
+aggregate()
+groupBy()
+```
 
-AVG(bonus)
+Calculates:
 
-AVG(stock)
-
-AVG(totalCompensation)
-
-COUNT(*)
+```text
+Average Compensation
+Median Compensation
+Minimum Compensation
+Maximum Compensation
+Submission Count
 ```
 
 ---
 
 ### Benchmark Analytics
 
-Calculate
-
-```sql
-Median Compensation
-```
-
-based on:
+Uses compensation data filtered by:
 
 ```text
 Role
-
 Level
-
 Location
 ```
 
----
-
-### Comparison Analytics
-
-Compare:
+Calculates:
 
 ```text
-Company A
-
-vs
-
-Company B
+Market Average
+Market Median
+Percentage Difference
+Compensation Status
 ```
 
-using:
+---
+
+### Company Comparison
+
+Calculates:
 
 ```text
-Average TC
-
-Median TC
-
+Average Compensation
+Median Compensation
 Submission Count
 ```
 
+for two companies.
+
 ---
 
-# 10. Prisma Schema Strategy
+### Dashboard Analytics
 
-Each table maps directly to a Prisma model.
+Provides:
 
-Benefits
+```text
+Total Companies
+Total Users
+Total Submissions
+Status Breakdown
+Compensation Statistics
+Recent Submissions
+```
 
-* Strong Type Safety
-* Easy Relations
-* Migration Support
+with pagination support.
+
+---
+
+# 9. Prisma ORM Strategy
+
+The schema maps directly to Prisma Models.
+
+Benefits:
+
+* Type Safety
+* Automatic Migrations
+* Relationship Management
 * Query Optimization
+* Aggregate Operations
+* Group By Operations
 
 ---
 
-# 11. Future Database Enhancements
+# 10. Future Enhancements
 
-Potential additions:
+Potential improvements:
 
-* Company Verification
+* Compensation Trend Analysis
 * Offer Letter Verification
-* Compensation Trends Table
-* Analytics Cache Table
-* Notification System
-* Audit Event Streaming
+* Analytics Caching
+* AI-Based Salary Prediction
+* Compensation Forecasting
+* Advanced Benchmark Models
 
-These features are intentionally excluded from the MVP to maintain simplicity and focus on compensation intelligence.
+These enhancements are intentionally excluded from the MVP to keep the platform focused on core compensation intelligence functionality.

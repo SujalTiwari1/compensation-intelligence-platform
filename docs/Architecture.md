@@ -8,53 +8,236 @@ Version: 1.0
 
 # 1. Architecture Overview
 
-The Compensation Intelligence Platform follows a layered modular monolith architecture.
+The Compensation Intelligence Platform follows a Layered Modular Monolith Architecture.
 
-The architecture prioritizes:
+The system is organized into independent feature modules while maintaining a single deployable application.
+
+### Architectural Goals
 
 * Maintainability
 * Scalability
 * Separation of Concerns
-* Type Safety
+* Reusability
 * Testability
-
-Architecture Flow:
-
-Client
-
-↓
-
-API Routes
-
-↓
-
-Controllers
-
-↓
-
-Services
-
-↓
-
-Repositories
-
-↓
-
-PostgreSQL
+* Clean Code Principles
 
 ---
 
-# 2. High Level Request Flow
+# 2. High Level Architecture
+
+```text
+Client
+   │
+   ▼
+Express REST API
+   │
+   ▼
+Routes
+   │
+   ▼
+Controllers
+   │
+   ▼
+Services
+   │
+   ▼
+Repositories
+   │
+   ▼
+Prisma ORM
+   │
+   ▼
+PostgreSQL (Neon)
+```
+
+---
+
+# 3. Technology Stack
+
+## Backend
+
+```text
+Node.js
+Express.js
+```
+
+## Database
+
+```text
+PostgreSQL (Neon)
+Prisma ORM
+```
+
+## Authentication
+
+```text
+JWT
+bcryptjs
+```
+
+## Validation
+
+```text
+Zod
+```
+
+## Documentation
+
+```text
+Swagger
+Postman Collection
+```
+
+## Containerization
+
+```text
+Docker
+```
+
+---
+
+# 4. Project Structure
+
+```text
+src
+│
+├── config
+├── constants
+├── docs
+├── middleware
+├── utils
+│
+├── modules
+│   ├── auth
+│   ├── company
+│   ├── role
+│   ├── level
+│   ├── location
+│   ├── compensation
+│   └── analytics
+│
+├── app.js
+└── server.js
+
+prisma
+│
+├── migrations
+├── seed.js
+├── compensation-seed.js
+└── schema.prisma
+```
+
+---
+
+# 5. Layered Architecture
+
+## Route Layer
+
+Responsibilities:
+
+* Endpoint Registration
+* Request Routing
+* Middleware Integration
 
 Example:
 
-Submit Compensation
+```text
+POST /auth/login
 
+GET /analytics/dashboard
+```
+
+---
+
+## Controller Layer
+
+Responsibilities:
+
+* Receive Requests
+* Call Service Layer
+* Format API Responses
+
+Example:
+
+```text
+auth.controller.js
+
+analytics.controller.js
+```
+
+---
+
+## Service Layer
+
+Responsibilities:
+
+* Business Logic
+* Compensation Calculation
+* Confidence Scoring
+* Benchmark Analysis
+* Company Comparison
+
+Example:
+
+```text
+analytics.service.js
+
+compensation.service.js
+```
+
+---
+
+## Repository Layer
+
+Responsibilities:
+
+* Database Access
+* Query Management
+* Aggregations
+* Pagination Queries
+
+Example:
+
+```text
+analytics.repository.js
+
+company.repository.js
+```
+
+---
+
+## Database Layer
+
+Responsibilities:
+
+* Data Persistence
+* Relationships
+* Index Management
+
+Technology:
+
+```text
+PostgreSQL + Prisma
+```
+
+---
+
+# 6. Request Processing Flow
+
+Example:
+
+Create Compensation Submission
+
+```text
 Client
 
 ↓
 
 POST /api/v1/compensations
+
+↓
+
+Validation Middleware
 
 ↓
 
@@ -66,19 +249,15 @@ Compensation Service
 
 ↓
 
-Validation Engine
-
-↓
-
-Confidence Scoring Engine
-
-↓
-
-Duplicate Detection Engine
+Confidence Scoring
 
 ↓
 
 Repository Layer
+
+↓
+
+Prisma ORM
 
 ↓
 
@@ -87,130 +266,18 @@ PostgreSQL
 ↓
 
 Response
-
----
-
-# 3. Module Breakdown
-
-## Auth Module
-
-Responsibilities:
-
-* User Registration
-* Login
-* JWT Token Generation
-* User Authentication
-
-Dependencies:
-
-* User Module
-
----
-
-## Compensation Module
-
-Responsibilities:
-
-* Compensation Submission
-* Compensation Update
-* Validation
-* Normalization
-
-Dependencies:
-
-* Company Module
-* Analytics Module
-
----
-
-## Company Module
-
-Responsibilities:
-
-* Company Information
-* Company Statistics
-* Aggregation Queries
-
----
-
-## Analytics Module
-
-Responsibilities:
-
-* Benchmarking
-* Compensation Comparison
-* Aggregations
-* Intelligence Reports
-
----
-
-# 4. Layered Architecture
-
-## Route Layer
-
-Responsibilities:
-
-* Endpoint Registration
-* Request Routing
-
-Example:
-
-```ts
-router.post("/compensations")
 ```
 
 ---
 
-## Controller Layer
+# 7. Validation Architecture
 
-Responsibilities:
+The application uses Zod-based schema validation.
 
-* Receive Requests
-* Handle Responses
-* Call Services
+Validation occurs before business logic execution.
 
-Example:
-
-```ts
-CompensationController.create()
-```
-
----
-
-## Service Layer
-
-Responsibilities:
-
-* Business Logic
-* Validation
-* Aggregations
-
-Example:
-
-```ts
-CompensationService.create()
-```
-
----
-
-## Repository Layer
-
-Responsibilities:
-
-* Database Communication
-* Query Management
-
-Example:
-
-```ts
-CompensationRepository.create()
-```
-
----
-
-# 5. Validation Pipeline
-
-Submission
+```text
+Request
 
 ↓
 
@@ -222,246 +289,378 @@ Business Validation
 
 ↓
 
-Normalization
+Controller
 
 ↓
 
-Confidence Scoring
+Service
+```
 
-↓
+Validation Targets:
 
-Duplicate Detection
+```text
+Body
 
-↓
+Query Parameters
 
-Database Persistence
+Route Parameters
+```
 
 ---
 
-# 6. Confidence Scoring Engine
+# 8. Authentication Architecture
 
-Scoring Factors
+Authentication Flow
 
-Known Company
+```text
+Register
 
-+20
+↓
 
-Known Role
+Hash Password
 
-+15
+↓
 
-Known Level
+Store User
 
-+15
+↓
 
-Valid Salary Range
+Login
 
-+25
+↓
 
-No Duplicate
+Verify Credentials
 
-+15
+↓
 
-Complete Submission
+Generate JWT
 
-+10
+↓
 
-Maximum Score = 100
+Access Protected Routes
+```
 
 ---
 
-# 7. Duplicate Detection Flow
+# 9. Authorization Architecture
 
-Submission
+Role-Based Access Control (RBAC)
 
-↓
+Roles:
 
-Find Similar Records
+```text
+USER
 
-↓
+ADMIN
+```
 
-Compare:
+Used for:
 
-* Company
-* Role
-* Level
-* Location
-* Compensation
+```text
+Protected APIs
 
-↓
-
-Similarity Score
-
-↓
-
-Duplicate Flag
+Administrative Operations
+```
 
 ---
 
-# 8. Analytics Engine
+# 10. Compensation Intelligence Engine
 
-Analytics Engine generates:
+The platform evaluates compensation submissions using a confidence score.
+
+### Scoring Factors
+
+```text
+Known Company     +20
+
+Known Role        +15
+
+Known Level       +15
+
+Known Location    +15
+
+Salary In Range   +20
+
+Not Duplicate     +15
+```
+
+Maximum Score:
+
+```text
+100
+```
+
+---
+
+### Status Mapping
+
+```text
+80 - 100
+
+APPROVED
+
+50 - 79
+
+PENDING_REVIEW
+
+0 - 49
+
+FLAGGED
+```
+
+---
+
+# 11. Analytics Architecture
+
+The Analytics Module is the core intelligence layer of the platform.
+
+---
 
 ## Company Analytics
 
-Average Base Salary
+Provides:
 
-Average Bonus
-
-Average Stock
-
-Average Total Compensation
-
----
-
-## Level Analytics
-
-Average Compensation per Level
-
----
-
-## Location Analytics
-
-Average Compensation per Location
-
----
-
-## Benchmark Analytics
+```text
+Average Compensation
 
 Median Compensation
 
-Market Benchmark
+Minimum Compensation
 
-Underpaid Analysis
+Maximum Compensation
+
+Submission Count
+```
+
+Uses:
+
+```text
+Prisma Aggregate
+
+Prisma GroupBy
+```
 
 ---
 
-# 9. Underpaid Analysis Engine
+## Benchmark Engine
 
 Input:
 
+```text
+Role
+
+Level
+
+Location
+
 Current Compensation
+```
+
+Process:
+
+```text
+Retrieve Similar Records
 
 ↓
 
-Retrieve Market Median
+Calculate Market Median
 
 ↓
 
-Calculate Difference
+Compare User Compensation
 
 ↓
 
 Generate Insight
+```
 
-Example:
+Output:
 
-User Compensation = 20L
+```text
+UNDERPAID
 
-Market Median = 28L
+FAIRLY_PAID
 
-Result:
-
-28.5% Below Market
+OVERPAID
+```
 
 ---
 
-# 10. Database Architecture
+## Company Comparison Engine
 
-Database: PostgreSQL
+Compares:
 
-ORM: Prisma
+```text
+Company A
+
+vs
+
+Company B
+```
+
+Metrics:
+
+```text
+Average Compensation
+
+Median Compensation
+
+Submission Count
+```
+
+---
+
+## Dashboard Analytics
+
+Provides:
+
+```text
+Platform Statistics
+
+Submission Metrics
+
+Compensation Metrics
+
+Recent Submissions
+
+Pagination Metadata
+```
+
+---
+
+# 12. Database Architecture
+
+Database:
+
+```text
+PostgreSQL (Neon)
+```
 
 Primary Tables:
 
-* Users
-* Companies
-* Roles
-* Levels
-* Locations
-* CompensationSubmissions
+```text
+Users
+
+Companies
+
+Roles
+
+Levels
+
+Locations
+
+CompensationSubmissions
+
+SubmissionAudits
+```
 
 ---
 
-# 11. Security Architecture
+# 13. Error Handling Strategy
 
-Authentication:
+Centralized Error Handling Middleware.
 
-JWT
+Error Types:
 
-Authorization:
+```text
+Validation Error
 
-Role Based Access Control
+Authentication Error
 
-Validation:
+Authorization Error
 
-Zod
+Business Logic Error
 
-Password Hashing:
+Database Error
+```
 
-bcrypt
+Response Format:
 
-Rate Limiting:
-
-Express Rate Limit
-
----
-
-# 12. Deployment Architecture
-
-Frontend
-
-↓
-
-Vercel
-
-Backend
-
-↓
-
-Railway
-
-↓
-
-Neon PostgreSQL
+```json
+{
+  "success": false,
+  "message": "Error Message"
+}
+```
 
 ---
 
-# 13. Logging Strategy
+# 14. Logging Strategy
 
-Application Logs
+Application Logging
+
+```text
+Morgan HTTP Logs
 
 Request Logs
 
 Error Logs
+```
 
-Analytics Logs
+Development Monitoring
 
----
+```text
+Console Logging
 
-# 14. Error Handling Strategy
-
-Centralized Error Handler
-
-Types:
-
-* Validation Error
-* Authentication Error
-* Authorization Error
-* Database Error
-* Business Logic Error
+Prisma Errors
+```
 
 ---
 
-# 15. Scalability Considerations
+# 15. Deployment Architecture
 
-Future Ready:
+```text
+Client
 
-* Redis Caching
-* Queue Processing
-* Event Driven Analytics
-* Microservices Migration
+↓
 
-Current MVP:
+Render Hosted API
 
+↓
+
+Express Application
+
+↓
+
+Prisma ORM
+
+↓
+
+Neon PostgreSQL
+```
+
+Supporting Services:
+
+```text
+Swagger Documentation
+
+Docker Container
+
+Postman Collection
+```
+
+---
+
+# 16. Scalability Considerations
+
+Current Architecture:
+
+```text
 Modular Monolith
+```
+
+Future Enhancements:
+
+```text
+Redis Caching
+
+Queue Processing
+
+Background Jobs
+
+Analytics Caching
+
+Microservices Migration
+```
+
+The current architecture is intentionally designed as a modular monolith to maximize development speed, maintainability, and simplicity while supporting future scaling requirements.
