@@ -1,5 +1,5 @@
 import prisma from "../src/config/db.js";
-
+import bcrypt from "bcryptjs";
 const companies = [
   "Google",
   "Amazon",
@@ -34,6 +34,33 @@ const locations = [
   { city: "Remote", country: "India" },
 ];
 
+const users = [
+  {
+    name: "Demo User 1",
+    email: "demo1@example.com",
+    password: "Demo1234",
+    role: "USER",
+  },
+  {
+    name: "Demo User 2",
+    email: "demo2@example.com",
+    password: "Demo1234",
+    role: "USER",
+  },
+  {
+    name: "Demo User 3",
+    email: "demo3@example.com",
+    password: "Demo1234",
+    role: "USER",
+  },
+  {
+    name: "Admin User",
+    email: "admin@example.com",
+    password: "Admin1234",
+    role: "ADMIN",
+  },
+];
+
 async function main() {
   // Companies
   await prisma.company.createMany({
@@ -63,6 +90,27 @@ async function main() {
   });
 
   console.log("✅ Seed completed");
+}
+
+for (const user of users) {
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      email: user.email,
+    },
+  });
+
+  if (existingUser) continue;
+
+  const hashedPassword = await bcrypt.hash(user.password, 12);
+
+  await prisma.user.create({
+    data: {
+      name: user.name,
+      email: user.email,
+      password: hashedPassword,
+      role: user.role,
+    },
+  });
 }
 
 main()

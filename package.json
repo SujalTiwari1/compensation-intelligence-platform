@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seed.js",
+    "seed:compensation": "node prisma/compensation-seed.js",
+     "reset:compensation": "node prisma/reset-compensation.js"
   },
   "keywords": [],
   "author": "",
